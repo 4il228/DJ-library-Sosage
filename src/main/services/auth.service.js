@@ -13,6 +13,13 @@ const SCOPES = [
   'profile'
 ];
 
+const PAGES_DIR = path.join(__dirname, '..', '..', '..', 'public');
+
+function loadPage(filename) {
+  const filePath = path.join(PAGES_DIR, filename);
+  return fs.readFileSync(filePath, 'utf-8');
+}
+
 class AuthService {
   constructor(options = {}) {
     this.clientId = options.clientId || '';
@@ -20,6 +27,11 @@ class AuthService {
     this.tokenDir = options.tokenDir || '';
     this.server = null;
     this.tokens = null;
+    this.pages = {
+      success: loadPage('oauth-success.html'),
+      denied: loadPage('oauth-denied.html'),
+      error: loadPage('oauth-error.html')
+    };
   }
 
   getTokenPath() {
@@ -63,7 +75,7 @@ class AuthService {
 
           if (error) {
             res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end('<html><body><h2>Authorization Denied</h2><p>You can close this window.</p></body></html>');
+            res.end(this.pages.denied);
             this._cleanupServer();
             const errMsg = error === 'access_denied' ? 'Authorization denied by user' : error;
             reject(new Error(errMsg));
@@ -72,14 +84,14 @@ class AuthService {
 
           if (!code) {
             res.writeHead(400, { 'Content-Type': 'text/html' });
-            res.end('<html><body><h2>Error</h2><p>No authorization code received.</p></body></html>');
+            res.end(this.pages.error);
             this._cleanupServer();
             reject(new Error('No authorization code received'));
             return;
           }
 
           res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.end('<html><body><h2>Authorization Successful!</h2><p>You can close this window and return to the app.</p></body></html>');
+          res.end(this.pages.success);
           this._cleanupServer();
 
           this._exchangeCode(code, codeVerifier, redirectUri)

@@ -11,8 +11,7 @@
   ],
   "win": {
     "target": ["nsis", "portable"],
-    "icon": "public/icon.ico",
-    "signAndEditExecutable": false
+    "icon": "public/icon.ico"
   },
   "mac": {
     "target": ["dmg"],

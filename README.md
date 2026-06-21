@@ -22,7 +22,7 @@
 
 ## О проекте
 
-**DJ Library Sosage** — десктопное приложение на Electron для безопасной синхронизации DJ-библиотеки (Rekordbox, Serato, Traktor) с Google Drive. Авторизация через OAuth 2.0 с PKCE, дифф-анализ по MD5, шифрование токенов через `safeStorage` — никаких данных на сторонних серверах.
+**DJ Library Sosage** — десктопное приложение на Electron для безопасной синхронизации DJ-библиотеки (Rekordbox, Serato, Traktor) с Google Drive. Авторизация через OAuth 2.0 с PKCE, дифф-анализ по MD5, шифрование токенов через `safeStorage` — никакие данные не покидают твой аккаунт, всё хранится исключительно на твоём Google Диске.
 
 ### Возможности
 
@@ -91,7 +91,7 @@ public/
 
 - `contextIsolation: true`, `nodeIntegration: false`
 - Единственный шлюз — `preload.js` через `contextBridge.exposeInMainWorld`
-- Токены — только в `safeStorage`, никакого localStorage или IndexedDB
+- Токены — только в `safeStorage` (шифрование на уровне ОС), никакого localStorage или IndexedDB
 - OAuth-флоу с PKCE (`code_verifier` / `code_challenge`)
 
 ### Diff Engine
@@ -129,7 +129,7 @@ IDLE → AUTH_PENDING → AUTHORIZED → SYNC_HASHING → SYNC_PROCESSING → SY
 | **Desktop Framework** | Electron 31 |
 | **Auth** | Google OAuth 2.0 + PKCE |
 | **API** | Google Drive API v3 |
-| **Storage** | OS-level safeStorage |
+| **Storage** | OS-level safeStorage (шифрование токенов на твоей машине) |
 | **Build** | electron-builder 24 (NSIS / DMG / Portable) |
 
 ## Лицензия

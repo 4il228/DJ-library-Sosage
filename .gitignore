@@ -1,0 +1,43 @@
+# Build output
+DJ library Sosage/
+win-unpacked/
+dist/
+release/
+
+# Dependencies
+node_modules/
+
+# Environment & Secrets
+.env
+src/config.json
+.env.local
+*.env
+credentials.json
+client_secret*.json
+token.json
+*.token
+oauth2.keys.json
+service-account*.json
+
+# Logs
+*.log
+build.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temp
+tmp/
+
+# Uploads
+uploads/

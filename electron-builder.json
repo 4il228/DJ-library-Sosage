@@ -1,0 +1,38 @@
+{
+  "appId": "com.nikita.electron-drive-sync",
+  "productName": "DJ Library Sosage",
+  "directories": {
+    "output": "DJ library Sosage"
+  },
+  "files": [
+    "src/**/*",
+    "public/**/*",
+    "package.json"
+  ],
+  "win": {
+    "target": ["nsis", "portable"],
+    "icon": "public/icon.ico",
+    "signAndEditExecutable": false
+  },
+  "mac": {
+    "target": ["dmg"],
+    "category": "public.app-category.utilities",
+    "icon": null
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "installerIcon": "public/icon.ico",
+    "uninstallerIcon": "public/icon.ico"
+  },
+  "dmg": {
+    "title": "Electron Drive Sync",
+    "contents": [
+      { "x": 130, "y": 220, "type": "file" },
+      { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
+    ]
+  },
+  "extraResources": [],
+  "publish": null
+}

@@ -1,0 +1,30 @@
+{
+  "name": "electron-drive-sync",
+  "version": "1.0.0",
+  "description": "DJ Library Sosage — Google Drive Sync",
+  "main": "src/main/index.js",
+  "scripts": {
+    "start": "electron .",
+    "build:icon": "node scripts/generate-icon.js",
+    "build": "npm run build:icon && electron-builder --config electron-builder.json",
+    "test": "node tests/context-isolation.spec.js",
+    "test:widget": "node tests/syncwidget.spec.js",
+    "test:auth": "jest tests/auth.spec.js",
+    "test:diff": "jest tests/diff.spec.js",
+    "test:network-stress": "jest tests/network-stress.spec.js --testTimeout=60000",
+    "test:e2e": "jest tests/e2e.spec.js --testTimeout=30000",
+    "test:phase4": "jest tests/diff.spec.js && jest tests/network-stress.spec.js --testTimeout=60000",
+    "test:phase5": "jest tests/e2e.spec.js --testTimeout=30000",
+    "test:all": "node tests/context-isolation.spec.js && node tests/syncwidget.spec.js && jest tests/auth.spec.js && jest tests/diff.spec.js && jest tests/network-stress.spec.js --testTimeout=60000 && jest tests/e2e.spec.js --testTimeout=30000"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0",
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "jest": "^30.4.2",
+    "sharp": "^0.33.2",
+    "to-ico": "^1.1.5"
+  }
+}

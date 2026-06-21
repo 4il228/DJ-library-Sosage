@@ -1,0 +1,27 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="100" fill="#121222" />
+  
+  <!-- Main Icon Group (Centered high) -->
+  <g transform="translate(256, 240)">
+    <!-- Vinyl Decks (Spinning Records) -->
+    <!-- Left Deck -->
+    <circle cx="-100" cy="40" r="70" stroke="#e94560" stroke-width="16" />
+    <circle cx="-100" cy="40" r="30" stroke="#e94560" stroke-width="4" stroke-dasharray="10 10" />
+    <circle cx="-100" cy="40" r="8" fill="#ffffff" />
+    
+    <!-- Right Deck -->
+    <circle cx="100" cy="40" r="70" stroke="#e94560" stroke-width="16" />
+    <circle cx="100" cy="40" r="30" stroke="#e94560" stroke-width="4" stroke-dasharray="10 10" />
+    <circle cx="100" cy="40" r="8" fill="#ffffff" />
+    
+    <!-- Sync "Brackets" (Arcs only, no arrowheads) -->
+    <path d="M-20 20 A30 30 0 0 1 20 20" stroke="#ffffff" stroke-width="8" stroke-linecap="round" />
+    <path d="M20 60 A30 30 0 0 1 -20 60" stroke="#ffffff" stroke-width="8" stroke-linecap="round" />
+    
+    <!-- Cloud (Above) -->
+    <path d="M-60 -60 C-60 -90 -30 -100 0 -100 C30 -100 60 -90 60 -60 C80 -60 90 -40 80 -25 C70 -10 50 -10 40 -10 L-40 -10 C-50 -10 -70 -10 -80 -25 C-90 -40 -80 -60 -60 -60 Z" fill="#e94560" />
+    <!-- Cloud Accent -->
+    <path d="M-20 -40 H20" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+  </g>
+</svg>

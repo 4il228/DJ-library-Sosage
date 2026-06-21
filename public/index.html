@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://lh3.googleusercontent.com https://*.googleusercontent.com data:; media-src 'self'">
+  <title>DJ Library Sosage — Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="topbar-left">
+        <img class="topbar-logo" src="logo.svg" alt="EDS">
+        <span class="topbar-title">DJ LIBRARY SOSAGE</span>
+        <span class="topbar-subtitle">| Sync &amp; Backup Tool</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="content-grid">
+
+        <div class="card card-folder">
+          <div class="card-header">
+            <h2 class="card-heading">
+              <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+              Sync Folder
+            </h2>
+            <span class="card-badge">LOCAL PATH</span>
+          </div>
+          <div class="folder-select">
+            <input type="text" id="folder-path" placeholder="/Users/dj_pro/Music/Library" readonly>
+            <button class="btn btn-secondary" id="btn-select-folder">Browse</button>
+          </div>
+          <p class="card-hint">Supported: Rekordbox, Serato, Traktor XMLs</p>
+        </div>
+
+        <div class="card card-auth">
+          <div class="card-header">
+            <h2 class="card-heading">
+              <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              Authentication
+            </h2>
+            <span class="card-badge card-badge-red" id="auth-status">DISCONNECTED</span>
+          </div>
+          <div id="auth-pre">
+            <button class="btn btn-google" id="btn-login">
+              <svg viewBox="0 0 24 24" class="google-icon"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+              Sign in with Google
+            </button>
+          </div>
+          <div id="auth-post" class="hidden">
+            <div class="user-profile">
+              <div class="user-avatar-wrap">
+                <img class="user-avatar" id="user-avatar" src="" alt="">
+                <div class="user-online"></div>
+              </div>
+              <div>
+                <p class="user-name" id="user-name"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-sync">
+          <div class="card-header">
+            <div>
+              <h2 class="card-heading">
+                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Sync Progress
+              </h2>
+              <p class="card-subtitle">Global synchronization status for connected devices.</p>
+            </div>
+            <div class="sync-actions">
+              <span class="status-badge" id="status-badge">
+                <span class="status-dot" id="status-dot"></span>
+                <span id="status-text">Idle</span>
+              </span>
+              <button class="btn btn-primary" id="btn-sync" disabled>
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Sync Now
+              </button>
+            </div>
+          </div>
+          <div id="sync-empty" class="sync-empty">
+            <svg class="sync-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            <p>Select a folder and authenticate to start syncing</p>
+          </div>
+          <div id="sync-details" class="sync-details hidden">
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+            <div class="sync-stats">
+              <div class="stat-card">
+                <p class="stat-label">FILES PROCESSED</p>
+                <p class="stat-value"><span id="processed-files">0</span> <span class="stat-divider">/</span> <span id="total-files">0</span></p>
+              </div>
+              <div class="stat-card">
+                <p class="stat-label">SPEED</p>
+                <p class="stat-value-mono" id="sync-speed">—</p>
+              </div>
+              <div class="stat-card stat-card-wide">
+                <p class="stat-label">CURRENT FILE</p>
+                <p class="stat-file" id="current-file">—</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-log">
+          <div class="card-header">
+            <h2 class="card-heading">
+              <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              Activity Log
+            </h2>
+          </div>
+          <div class="log-container" id="log-container">
+            <div class="log-empty" id="log-empty">
+              <svg class="log-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              <p>No activity yet</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>

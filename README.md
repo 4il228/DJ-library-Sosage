@@ -39,7 +39,7 @@
 ### Запуск в режиме разработки
 
 ```bash
-git clone <url-репозитория>
+git clone https://github.com/4il228/DJ-library-Sosage
 cd "DJ library Sosage"
 npm install
 npm start
@@ -48,7 +48,7 @@ npm start
 ### Сборка из исходников
 
 ```bash
-git clone <url-репозитория>
+git clone https://github.com/4il228/DJ-library-Sosage
 cd "DJ library Sosage"
 npm install
 npm run build

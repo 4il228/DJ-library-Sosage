@@ -1,6 +1,6 @@
 [![Electron](https://img.shields.io/badge/electron-31.x-47848F?logo=electron&style=flat-square)](https://www.electronjs.org/)
 [![Google Drive](https://img.shields.io/badge/Google_Drive_API-v3-4285F4?logo=google-drive&style=flat-square)](https://developers.google.com/drive/api)
-[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](https://opensource.org/license/mit)
+[![License: CC BY-SA 4.0](https://img.shields.io/badge/license-CC_BY--SA_4.0-EF9421?style=flat-square&logo=creativecommons&logoColor=white)](https://creativecommons.org/licenses/by-sa/4.0/)
 
 <br>
 <p align="center">
@@ -134,4 +134,6 @@ IDLE → AUTH_PENDING → AUTHORIZED → SYNC_HASHING → SYNC_PROCESSING → SY
 
 ## Лицензия
 
-MIT
+Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+
+Подробнее — в файле [LICENSE.md](LICENSE.md).

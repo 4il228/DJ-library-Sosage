@@ -257,51 +257,67 @@ async function downloadFile(accessToken, driveId, localPath, sem) {
   });
 }
 
+const _ensureRemoteDirPromises = new Map();
+
 async function ensureRemoteDir(accessToken, parentFolderId, relativeDir, sem) {
   if (!relativeDir) return parentFolderId;
-  const parts = relativeDir.split(path.sep).filter(Boolean);
-  let currentParent = parentFolderId;
 
-  for (const part of parts) {
-    const searchUrl = `${DRIVE_API}/files?` + new URLSearchParams({
-      q: `name='${part}' and '${currentParent}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`,
-      fields: 'files(id)',
-      pageSize: '1'
-    });
+  const cacheKey = `${parentFolderId}:${relativeDir}`;
 
-    const existing = await sem.run(async () => {
-      const res = await fetch(searchUrl, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      });
-      if (!res.ok) return null;
-      const data = await res.json();
-      return data.files?.[0]?.id || null;
-    });
-
-    if (existing) {
-      currentParent = existing;
-    } else {
-      currentParent = await sem.run(async () => {
-        const res = await fetch(`${DRIVE_API}/files`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            name: part,
-            mimeType: 'application/vnd.google-apps.folder',
-            parents: [currentParent]
-          })
-        });
-        if (!res.ok) throw new Error(`Failed to create subfolder ${part}`);
-        const data = await res.json();
-        return data.id;
-      });
-    }
+  if (_ensureRemoteDirPromises.has(cacheKey)) {
+    return _ensureRemoteDirPromises.get(cacheKey);
   }
 
-  return currentParent;
+  const promise = (async () => {
+    const parts = relativeDir.split(path.sep).filter(Boolean);
+    let currentParent = parentFolderId;
+
+    for (const part of parts) {
+      const searchUrl = `${DRIVE_API}/files?` + new URLSearchParams({
+        q: `name='${part}' and '${currentParent}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`,
+        fields: 'files(id)',
+        pageSize: '1'
+      });
+
+      const existing = await sem.run(async () => {
+        const res = await fetch(searchUrl, {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.files?.[0]?.id || null;
+      });
+
+      if (existing) {
+        currentParent = existing;
+      } else {
+        currentParent = await sem.run(async () => {
+          const res = await fetch(`${DRIVE_API}/files`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              name: part,
+              mimeType: 'application/vnd.google-apps.folder',
+              parents: [currentParent]
+            })
+          });
+          if (!res.ok) throw new Error(`Failed to create subfolder ${part}`);
+          const data = await res.json();
+          return data.id;
+        });
+      }
+    }
+
+    return currentParent;
+  })();
+
+  _ensureRemoteDirPromises.set(cacheKey, promise);
+  promise.finally(() => _ensureRemoteDirPromises.delete(cacheKey));
+
+  return promise;
 }
 
 ipcMain.on('sync:start', async (event, config) => {

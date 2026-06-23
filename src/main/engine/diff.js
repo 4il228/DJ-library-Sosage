@@ -197,11 +197,16 @@ class DiffEngine {
 
   async fetchRemoteFiles() {
     const files = [];
+    await this._fetchFolderContents(this.parentFolderId, '', files);
+    return files;
+  }
+
+  async _fetchFolderContents(folderId, relativePath, files) {
     let pageToken = null;
 
     do {
       const params = new URLSearchParams({
-        q: `'${this.parentFolderId}' in parents and trashed = false`,
+        q: `'${folderId}' in parents and trashed = false`,
         fields: 'nextPageToken, files(id, name, md5Checksum, modifiedTime, mimeType)',
         pageSize: '100'
       });
@@ -220,28 +225,36 @@ class DiffEngine {
       const data = await response.json();
 
       for (const file of data.files || []) {
-        files.push({
-          id: file.id,
-          name: file.name,
-          md5Checksum: file.md5Checksum,
-          modifiedTime: file.modifiedTime,
-          mimeType: file.mimeType
-        });
+        if (file.mimeType === 'application/vnd.google-apps.folder') {
+          const subfolderPath = relativePath
+            ? `${relativePath}/${file.name}`
+            : file.name;
+          await this._fetchFolderContents(file.id, subfolderPath, files);
+        } else {
+          const filePath = relativePath
+            ? `${relativePath}/${file.name}`
+            : file.name;
+          files.push({
+            id: file.id,
+            name: filePath,
+            md5Checksum: file.md5Checksum,
+            modifiedTime: file.modifiedTime,
+            mimeType: file.mimeType
+          });
 
-        this.onProgress({
-          status: 'SYNC_HASHING',
-          currentFile: `Fetched: ${file.name}`,
-          processedFiles: files.length,
-          totalFiles: 0,
-          percentage: 0,
-          speed: ''
-        });
+          this.onProgress({
+            status: 'SYNC_HASHING',
+            currentFile: `Fetched: ${filePath}`,
+            processedFiles: files.length,
+            totalFiles: 0,
+            percentage: 0,
+            speed: ''
+          });
+        }
       }
 
       pageToken = data.nextPageToken || null;
     } while (pageToken);
-
-    return files;
   }
 
   normalizeKey(name) {

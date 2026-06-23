@@ -279,7 +279,92 @@ describe('DiffEngine — QA-401', () => {
     });
   });
 
-  describe('Case-insensitivity (Windows)', () => {
+  describe('Subdirectory file handling', () => {
+  it('should match files in subdirectories using full relative paths', () => {
+    const engine = new DiffEngine({ localPath: '/test', accessToken: 'test' });
+    const localFiles = [
+      { localPath: '/test/subdir/file.mp3', relativePath: 'subdir/file.mp3', md5: 'abc', mtimeMs: 1000 }
+    ];
+    const remoteFiles = [
+      { id: 'drive1', name: 'subdir/file.mp3', md5Checksum: 'abc', modifiedTime: '2026-01-01T00:00:00.000Z', mimeType: 'audio/mpeg' }
+    ];
+
+    const result = engine.diff(localFiles, remoteFiles);
+    expect(result.toUpload).toHaveLength(0);
+    expect(result.toDownload).toHaveLength(0);
+  });
+
+  it('should upload files in subdirectories when only local', () => {
+    const engine = new DiffEngine({ localPath: '/test', accessToken: 'test' });
+    const localFiles = [
+      { localPath: '/test/subdir/local.mp3', relativePath: 'subdir/local.mp3', md5: 'abc', mtimeMs: 1000 }
+    ];
+    const remoteFiles = [];
+
+    const result = engine.diff(localFiles, remoteFiles);
+    expect(result.toUpload).toHaveLength(1);
+    expect(result.toUpload[0].relativePath).toBe('subdir/local.mp3');
+  });
+
+  it('should download files in subdirectories with full relative path', () => {
+    const engine = new DiffEngine({ localPath: '/test', accessToken: 'test' });
+    const localFiles = [];
+    const remoteFiles = [
+      { id: 'drive1', name: 'subdir/remote.mp3', md5Checksum: 'abc', modifiedTime: '2026-01-01T00:00:00.000Z', mimeType: 'audio/mpeg' }
+    ];
+
+    const result = engine.diff(localFiles, remoteFiles);
+    expect(result.toDownload).toHaveLength(1);
+    expect(result.toDownload[0].relativePath).toBe('subdir/remote.mp3');
+  });
+
+  it('should handle deeply nested subdirectories', () => {
+    const engine = new DiffEngine({ localPath: '/test', accessToken: 'test' });
+    const localFiles = [
+      { localPath: '/test/a/b/c/d/deep.mp3', relativePath: 'a/b/c/d/deep.mp3', md5: 'xyz', mtimeMs: 1000 }
+    ];
+    const remoteFiles = [
+      { id: 'drive1', name: 'a/b/c/d/deep.mp3', md5Checksum: 'xyz', modifiedTime: '2026-01-01T00:00:00.000Z', mimeType: 'audio/mpeg' }
+    ];
+
+    const result = engine.diff(localFiles, remoteFiles);
+    expect(result.toUpload).toHaveLength(0);
+    expect(result.toDownload).toHaveLength(0);
+  });
+
+  it('should resolve conflicts for files in subdirectories', () => {
+    const engine = new DiffEngine({ localPath: '/test', accessToken: 'test' });
+    const now = Date.now();
+    const localFiles = [
+      { localPath: '/test/sub/file.mp3', relativePath: 'sub/file.mp3', md5: 'hash1', mtimeMs: now }
+    ];
+    const remoteFiles = [
+      { id: 'drive1', name: 'sub/file.mp3', md5Checksum: 'hash2', modifiedTime: new Date(now + 500).toISOString(), mimeType: 'audio/mpeg' }
+    ];
+
+    const result = engine.diff(localFiles, remoteFiles);
+    expect(result.conflicts).toHaveLength(1);
+    expect(result.conflicts[0].relativePath).toBe('sub/file.mp3');
+  });
+
+  it('should handle subdirectories with case-insensitivity on Windows', () => {
+    const engine = new DiffEngine({ localPath: '/test', accessToken: 'test' });
+    engine.isWindows = true;
+
+    const localFiles = [
+      { localPath: '/test/SubDir/File.mp3', relativePath: 'SubDir/File.mp3', md5: 'abc', mtimeMs: 1000 }
+    ];
+    const remoteFiles = [
+      { id: 'drive1', name: 'subdir/file.mp3', md5Checksum: 'abc', modifiedTime: '2026-01-01T00:00:00.000Z', mimeType: 'audio/mpeg' }
+    ];
+
+    const result = engine.diff(localFiles, remoteFiles);
+    expect(result.toUpload).toHaveLength(0);
+    expect(result.toDownload).toHaveLength(0);
+  });
+});
+
+describe('Case-insensitivity (Windows)', () => {
     it('should handle case-insensitive filename comparison', () => {
       const engine = new DiffEngine({ localPath: '/test', accessToken: 'test' });
       engine.isWindows = true;
